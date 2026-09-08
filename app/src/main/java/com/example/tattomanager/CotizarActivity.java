@@ -1,12 +1,12 @@
 package com.example.tattomanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +16,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class CotizarActivity extends AppCompatActivity {
 
-    // Declaramos variables
     private EditText edtCliente;
     private EditText edtTamano;
     private RadioGroup rgEstilos;
@@ -35,38 +34,45 @@ public class CotizarActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Enlazamos componentes de la vista (Siempre despues de setContentView)
+        // Enlazamos componentes
         edtCliente = findViewById(R.id.edtCliente);
         edtTamano = findViewById(R.id.edtTamano);
         rgEstilos = findViewById(R.id.rgEstilos);
         rbTradicional = findViewById(R.id.rbTradicional);
         btnCalcular = findViewById(R.id.btnCalcular);
 
-        // Click en Calcular
         btnCalcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String cliente = edtCliente.getText().toString().trim();
                 String tamanoStr = edtTamano.getText().toString().trim();
 
-                // Validamos vacios
+                // Validamos campos vacios
                 if (cliente.isEmpty()) {
-                    edtCliente.setError("Ingresa el nombre del cliente");
+                    edtCliente.setError("Escribe el nombre del cliente");
                     return;
                 }
                 if (tamanoStr.isEmpty()) {
-                    edtTamano.setError("Ingresa los centimetros");
+                    edtTamano.setError("Escribe los centímetros");
                     return;
                 }
 
-                // Calculo de precio
+                // Operacion matematica de cotizacion
                 int tamano = Integer.parseInt(tamanoStr);
                 int valorBase = rbTradicional.isChecked() ? 5000 : 8000;
                 int total = tamano * valorBase;
+                String estilo = rbTradicional.isChecked() ? "Tradicional / Blackwork" : "Realismo / Color";
 
-                // Mostramos el calculo temporal en pantalla
-                String mensaje = "Cliente: " + cliente + " | Total: $" + total + " CLP";
-                Toast.makeText(CotizarActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                // Intent explicito para ir a la pantalla de confirmacion
+                Intent intent = new Intent(CotizarActivity.this, ConfirmacionActivity.class);
+
+                // Traspaso de variables
+                intent.putExtra("CLIENTE", cliente);
+                intent.putExtra("ESTILO", estilo);
+                intent.putExtra("TAMANO", tamanoStr);
+                intent.putExtra("TOTAL", String.valueOf(total));
+
+                startActivity(intent);
             }
         });
     }
