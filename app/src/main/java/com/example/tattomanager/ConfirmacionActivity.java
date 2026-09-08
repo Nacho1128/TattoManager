@@ -29,26 +29,29 @@ public class ConfirmacionActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Enlazamos componentes de la vista
         txtResumen = findViewById(R.id.txtResumen);
         btnVolver = findViewById(R.id.btnVolver);
 
-        // Rescatamos los datos recibidos de la actividad anterior
+        // Capturamos el intent con los extras enviados
         Intent intentRecibido = getIntent();
         String cliente = intentRecibido.getStringExtra("CLIENTE");
         String estilo = intentRecibido.getStringExtra("ESTILO");
         String tamano = intentRecibido.getStringExtra("TAMANO");
         String total = intentRecibido.getStringExtra("TOTAL");
+        String abono = intentRecibido.getStringExtra("ABONO");
+        String saldo = intentRecibido.getStringExtra("SALDO");
 
-        // Formateamos los datos para mostrarlos en la tarjeta
+        // Resumen formateado con abonos y saldos
         String resumenTexto = "• Cliente: " + cliente + "\n" +
                 "• Estilo: " + estilo + "\n" +
-                "• Tamaño: " + tamano + " cm\n\n" +
-                "• Total Estimado: $" + total + " CLP";
+                "• Tamaño: " + tamano + " cm\n" +
+                "• Valor Total: " + total + "\n\n" +
+                "• Abono Recibido (20%): " + abono + "\n" +
+                "• Saldo Pendiente: " + saldo;
 
         txtResumen.setText(resumenTexto);
 
-        // Volver al menu de inicio limpiando la pila de actividades (Back Stack)
+        // Volver al inicio limpiando la pila de actividades (Back Stack) para cuidar la RAM
         btnVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
