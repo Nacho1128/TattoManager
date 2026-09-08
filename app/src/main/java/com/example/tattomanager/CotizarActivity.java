@@ -34,7 +34,7 @@ public class CotizarActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Enlazamos componentes
+        // Enlazamos componentes despues de setContentView
         edtCliente = findViewById(R.id.edtCliente);
         edtTamano = findViewById(R.id.edtTamano);
         rgEstilos = findViewById(R.id.rgEstilos);
@@ -57,21 +57,35 @@ public class CotizarActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Operacion matematica de cotizacion
-                int tamano = Integer.parseInt(tamanoStr);
+                // --- PREVENCIÓN DE CAÍDAS (TRY-CATCH) ---
+                int tamano;
+                try {
+                    // Convertimos el texto a numero entero
+                    tamano = Integer.parseInt(tamanoStr);
+
+                    // Evitamos numeros negativos o absurdamente gigantes para un tatuaje
+                    if (tamano <= 0 || tamano > 150) {
+                        edtTamano.setError("El tamaño debe ser entre 1 y 150 cm");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    // Si el numero causa desbordamiento de memoria, evitamos el crash catastrófico
+                    edtTamano.setError("Número inválido o demasiado grande");
+                    return;
+                }
+                // ----------------------------------------
+
+                // Calculamos el total usando tu logica
                 int valorBase = rbTradicional.isChecked() ? 5000 : 8000;
                 int total = tamano * valorBase;
                 String estilo = rbTradicional.isChecked() ? "Tradicional / Blackwork" : "Realismo / Color";
 
-                // Intent explicito para ir a la pantalla de confirmacion
+                // Pasamos los datos usando tus mismas claves que ya funcionan
                 Intent intent = new Intent(CotizarActivity.this, ConfirmacionActivity.class);
-
-                // Traspaso de variables
                 intent.putExtra("CLIENTE", cliente);
                 intent.putExtra("ESTILO", estilo);
                 intent.putExtra("TAMANO", tamanoStr);
                 intent.putExtra("TOTAL", String.valueOf(total));
-
                 startActivity(intent);
             }
         });
