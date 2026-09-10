@@ -1,5 +1,7 @@
 package com.example.tattomanager;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,16 +21,20 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class CotizarActivity extends AppCompatActivity {
 
-    private EditText edtCliente;
-    private EditText edtTamano;
+    private EditText edtCliente, edtTamano;
     private RadioGroup rgEstilos;
     private RadioButton rbTradicional;
-    private CheckBox chkAbono; // Nueva variable para el CheckBox
-    private Button btnCalcular;
+    private CheckBox chkAbono;
+    private Button btnSeleccionarFecha, btnSeleccionarHora, btnCalcular;
+    private TextView txtFechaHoraSeleccionada;
+
+    private String fechaSeleccionada = "Por definir";
+    private String horaSeleccionada = "Por definir";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,82 +48,108 @@ public class CotizarActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Vinculación segura de los componentes visuales
         edtCliente = findViewById(R.id.edtCliente);
         edtTamano = findViewById(R.id.edtTamano);
         rgEstilos = findViewById(R.id.rgEstilos);
         rbTradicional = findViewById(R.id.rbTradicional);
-        chkAbono = findViewById(R.id.chkAbono); // Vinculamos la casilla
+        chkAbono = findViewById(R.id.chkAbono);
+        btnSeleccionarFecha = findViewById(R.id.btnSeleccionarFecha);
+        btnSeleccionarHora = findViewById(R.id.btnSeleccionarHora);
+        txtFechaHoraSeleccionada = findViewById(R.id.txtFechaHoraSeleccionada);
         btnCalcular = findViewById(R.id.btnCalcular);
 
-        btnCalcular.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ocultar el teclado automáticamente
-                View viewFocus = CotizarActivity.this.getCurrentFocus();
-                if (viewFocus != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm != null) {
-                        imm.hideSoftInputFromWindow(viewFocus.getWindowToken(), 0);
-                    }
-                }
+        // Selector de Fecha con DatePickerDialog
+        btnSeleccionarFecha.setOnClickListener(v -> {
+            final Calendar c = Calendar.getInstance();
+            int anio = c.get(Calendar.YEAR);
+            int mes = c.get(Calendar.MONTH);
+            int dia = c.get(Calendar.DAY_OF_MONTH);
 
-                String cliente = edtCliente.getText().toString().trim();
-                String tamanoStr = edtTamano.getText().toString().trim();
-
-                // Validación de campos obligatorios
-                if (cliente.isEmpty()) {
-                    edtCliente.setError("Escribe el nombre del cliente");
-                    return;
-                }
-                if (tamanoStr.isEmpty()) {
-                    edtTamano.setError("Escribe los centímetros");
-                    return;
-                }
-
-                // Prevención de caídas con try-catch
-                int tamano;
-                try {
-                    tamano = Integer.parseInt(tamanoStr);
-                    if (tamano <= 0 || tamano > 150) {
-                        edtTamano.setError("El tamaño debe ser entre 1 y 150 cm");
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    edtTamano.setError("Número demasiado grande");
-                    return;
-                }
-
-                // Cálculo de valor base por centímetros
-                int valorBase = rbTradicional.isChecked() ? 5000 : 8000;
-                int total = tamano * valorBase;
-                String estilo = rbTradicional.isChecked() ? "Tradicional / Blackwork" : "Realismo / Color";
-
-                // --- NUEVA LÓGICA DE ABONO ---
-                int abono = 0;
-                int saldoPendiente = total;
-
-                if (chkAbono.isChecked()) {
-                    abono = (int) (total * 0.20); // Abono del 20%
-                    saldoPendiente = total - abono;
-                }
-
-                // Formateador de moneda de Chile (puntos de miles)
-                NumberFormat formatCL = NumberFormat.getInstance(new Locale("es", "CL"));
-                String totalFormateado = "$" + formatCL.format(total) + " CLP";
-                String abonoFormateado = "$" + formatCL.format(abono) + " CLP";
-                String saldoFormateado = "$" + formatCL.format(saldoPendiente) + " CLP";
-
-                // Enviar datos ordenados a la tercera pantalla mediante Intent explicito
-                Intent intent = new Intent(CotizarActivity.this, ConfirmacionActivity.class);
-                intent.putExtra("CLIENTE", cliente);
-                intent.putExtra("ESTILO", estilo);
-                intent.putExtra("TAMANO", tamanoStr);
-                intent.putExtra("TOTAL", totalFormateado);
-                intent.putExtra("ABONO", abonoFormateado);
-                intent.putExtra("SALDO", saldoFormateado);
-                startActivity(intent);
-            }
+            DatePickerDialog datePickerDialog = new DatePickerDialog(CotizarActivity.this,
+                    (view, year, monthOfYear, dayOfMonth) -> {
+                        fechaSeleccionada = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                        actualizarTextoCita();
+                    }, anio, mes, dia);
+            datePickerDialog.show();
         });
+
+        // Selector de Hora con TimePickerDialog
+        btnSeleccionarHora.setOnClickListener(v -> {
+            final Calendar c = Calendar.getInstance();
+            int hora = c.get(Calendar.HOUR_OF_DAY);
+            int minuto = c.get(Calendar.MINUTE);
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(CotizarActivity.this,
+                    (view, hourOfDay, minute) -> {
+                        horaSeleccionada = String.format(Locale.getDefault(), "%02d:%02d hrs", hourOfDay, minute);
+                        actualizarTextoCita();
+                    }, hora, minuto, true);
+            timePickerDialog.show();
+        });
+
+        btnCalcular.setOnClickListener(v -> {
+            ocultarTeclado();
+
+            String cliente = edtCliente.getText().toString().trim();
+            String tamanoStr = edtTamano.getText().toString().trim();
+
+            if (cliente.isEmpty()) {
+                edtCliente.setError("Escribe el nombre del cliente");
+                return;
+            }
+            if (tamanoStr.isEmpty()) {
+                edtTamano.setError("Escribe los centímetros");
+                return;
+            }
+
+            int tamano;
+            try {
+                tamano = Integer.parseInt(tamanoStr);
+                if (tamano <= 0 || tamano > 150) {
+                    edtTamano.setError("El tamaño debe ser entre 1 y 150 cm");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                edtTamano.setError("Número inválido");
+                return;
+            }
+
+            int valorBase = rbTradicional.isChecked() ? 5000 : 8000;
+            int total = tamano * valorBase;
+            String estilo = rbTradicional.isChecked() ? "Tradicional / Blackwork" : "Realismo / Color";
+
+            int abono = 0;
+            int saldo = total;
+            if (chkAbono.isChecked()) {
+                abono = (int) (total * 0.20);
+                saldo = total - abono;
+            }
+
+            NumberFormat formatCL = NumberFormat.getInstance(new Locale("es", "CL"));
+
+            Intent intent = new Intent(CotizarActivity.this, ConfirmacionActivity.class);
+            intent.putExtra("CLIENTE", cliente);
+            intent.putExtra("ESTILO", estilo);
+            intent.putExtra("TAMANO", tamanoStr);
+            intent.putExtra("FECHA_HORA", fechaSeleccionada + " a las " + horaSeleccionada);
+            intent.putExtra("TOTAL", "$" + formatCL.format(total) + " CLP");
+            intent.putExtra("ABONO", "$" + formatCL.format(abono) + " CLP");
+            intent.putExtra("SALDO", "$" + formatCL.format(saldo) + " CLP");
+            startActivity(intent);
+        });
+    }
+
+    private void actualizarTextoCita() {
+        txtFechaHoraSeleccionada.setText("Cita: " + fechaSeleccionada + " - " + horaSeleccionada);
+    }
+
+    private void ocultarTeclado() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
     }
 }

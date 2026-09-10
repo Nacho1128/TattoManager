@@ -2,9 +2,9 @@ package com.example.tattomanager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ public class ConfirmacionActivity extends AppCompatActivity {
 
     private TextView txtResumen;
     private Button btnVolver;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,34 +32,37 @@ public class ConfirmacionActivity extends AppCompatActivity {
 
         txtResumen = findViewById(R.id.txtResumen);
         btnVolver = findViewById(R.id.btnVolver);
+        dbHelper = new DatabaseHelper(this);
 
-        // Capturamos el intent con los extras enviados
         Intent intentRecibido = getIntent();
         String cliente = intentRecibido.getStringExtra("CLIENTE");
         String estilo = intentRecibido.getStringExtra("ESTILO");
         String tamano = intentRecibido.getStringExtra("TAMANO");
+        String fechaHora = intentRecibido.getStringExtra("FECHA_HORA");
         String total = intentRecibido.getStringExtra("TOTAL");
         String abono = intentRecibido.getStringExtra("ABONO");
         String saldo = intentRecibido.getStringExtra("SALDO");
 
-        // Resumen formateado con abonos y saldos
         String resumenTexto = "• Cliente: " + cliente + "\n" +
                 "• Estilo: " + estilo + "\n" +
                 "• Tamaño: " + tamano + " cm\n" +
-                "• Valor Total: " + total + "\n\n" +
-                "• Abono Recibido (20%): " + abono + "\n" +
+                "• Cita: " + fechaHora + "\n\n" +
+                "• Valor Total: " + total + "\n" +
+                "• Abono (20%): " + abono + "\n" +
                 "• Saldo Pendiente: " + saldo;
 
         txtResumen.setText(resumenTexto);
 
-        // Volver al inicio limpiando la pila de actividades (Back Stack) para cuidar la RAM
-        btnVolver.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentHome = new Intent(ConfirmacionActivity.this, MainActivity.class);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intentHome);
-            }
+        // Guardado persistente en la base de datos SQLite de la app
+        boolean guardadoExitoso = dbHelper.guardarCotizacion(cliente, estilo, tamano, fechaHora, total);
+        if (guardadoExitoso) {
+            Toast.makeText(this, "Cotización guardada en BD local", Toast.LENGTH_SHORT).show();
+        }
+
+        btnVolver.setOnClickListener(v -> {
+            Intent intentHome = new Intent(ConfirmacionActivity.this, MainActivity.class);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intentHome);
         });
     }
 }
