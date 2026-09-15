@@ -2,41 +2,36 @@ package com.example.tattomanager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Button btnIniciar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        // Enlazamos el boton del xml
-        btnIniciar = findViewById(R.id.btnIniciar);
-
-        // Al hacer click, viajamos a la pantalla del cotizador
-        btnIniciar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        setContentView(R.layout.activity_main); Button btnIniciar = findViewById(R.id.btnIniciar);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
+        if (bottomNavigation != null) {
+            bottomNavigation.setSelectedItemId(R.id.nav_home);
+            bottomNavigation.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_cotizar){
+                    startActivity(new Intent(MainActivity.this, CotizarActivity.class));
+                    return true;
+                } else if (itemId == R.id.nav_resumen){
+                    startActivity(new Intent(MainActivity.this, ConfirmacionActivity.class));
+                    return true;
+                }
+                return itemId == R.id.nav_home;
+            });
+        } if (btnIniciar != null) {
+            btnIniciar.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, CotizarActivity.class);
                 startActivity(intent);
-            }
-        });
+            });
+        }
     }
 }

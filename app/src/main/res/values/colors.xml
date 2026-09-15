@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black_background">#121212</color>
-    <color name="card_background">#1E1E1E</color>
-    <color name="neon_green">#00E676</color>
+    <!-- Fondos oscuros góticos -->
+    <color name="bg_black">#080203</color>
+    <color name="black_background">#080203</color>
+    <color name="card_dark">#180A0C</color>
+    <color name="card_background">#180A0C</color>
+    <color name="input_bg">#120507</color>
+
+    <!-- Color de acento principal: Rojo Carmesí Neón -->
+    <color name="crimson_red">#FF1744</color>
+    <color name="neon_green">#FF1744</color> <!-- Cambia verde a rojo manteniendo compatibilidad -->
+    <color name="border_red">#880E4F</color>
+
+    <!-- Textos -->
     <color name="text_white">#FFFFFF</color>
-    <color name="text_grey">#CCCCCC</color>
-    <color name="hint_grey">#555555</color>
+    <color name="text_grey">#B0BEC5</color>
+    <color name="hint_grey">#665558</color>
 </resources>

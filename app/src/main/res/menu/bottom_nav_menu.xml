@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="Inicio" />
+    <item
+        android:id="@+id/nav_cotizar"
+        android:title="Cotizar" />
+    <item
+        android:id="@+id/nav_resumen"
+        android:title="Resumen" />
+
+</menu>
