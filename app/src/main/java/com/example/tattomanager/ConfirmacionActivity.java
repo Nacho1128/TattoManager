@@ -19,7 +19,8 @@ public class ConfirmacionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirmacion); txtResumen = findViewById(R.id.txtResumen);
+        setContentView(R.layout.activity_confirmacion);
+        txtResumen = findViewById(R.id.txtResumen);
         btnVolver = findViewById(R.id.btnVolver);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         dbHelper = new DatabaseHelper(this);
@@ -27,16 +28,17 @@ public class ConfirmacionActivity extends AppCompatActivity {
             bottomNavigation.setSelectedItemId(R.id.nav_resumen);
             bottomNavigation.setOnItemSelectedListener(item -> {
                 int itemId = item.getItemId();
-                if (itemId == R.id.nav_home){
+                if (itemId == R.id.nav_home) {
                     startActivity(new Intent(this, MainActivity.class));
                     return true;
-                } else if (itemId == R.id.nav_cotizar){
+                } else if (itemId == R.id.nav_cotizar) {
                     startActivity(new Intent(this, CotizarActivity.class));
                     return true;
                 }
                 return itemId == R.id.nav_resumen;
             });
-        } Intent intentRecibido = getIntent();
+        }
+        Intent intentRecibido = getIntent();
         String cliente = intentRecibido.getStringExtra("CLIENTE");
         String estilo = intentRecibido.getStringExtra("ESTILO");
         String tamano = intentRecibido.getStringExtra("TAMANO");
@@ -44,19 +46,28 @@ public class ConfirmacionActivity extends AppCompatActivity {
         String total = intentRecibido.getStringExtra("TOTAL");
         String abono = intentRecibido.getStringExtra("ABONO");
         String saldo = intentRecibido.getStringExtra("SALDO");
-        if (cliente == null) cliente = "No especificado";
-        if (estilo == null) estilo = "No especificado";
-        if (tamano == null) tamano = "0";
-        if (fechaHora == null) fechaHora = "No agendada";
-        if (total == null) total = "$0 CLP";
-        if (abono == null) abono = "$0 CLP";
-        if (saldo == null) saldo = "$0 CLP";
-        String resumenTexto = "👤 Cliente:\\n" + cliente + "\\n\\n" + "📐 Tamaño:\\n" + tamano + " cm\\n\\n" + "🎨 Estilo:\\n" + estilo + "\\n\\n" + "📅 Cita Agendada:\\n" + fechaHora + "\\n\\n" + "💰 Presupuesto Estimado:\\n" + total + "\\n" + "• Abono (20%): " + abono + "\\n" + "• Saldo Pendiente: " + saldo;
+        if (cliente == null || cliente.trim().isEmpty()) cliente = "No especificado";
+        if (estilo == null || estilo.trim().isEmpty()) estilo = "No especificado";
+        if (tamano == null || tamano.trim().isEmpty()) tamano = "0";
+        if (fechaHora == null || fechaHora.trim().isEmpty()) fechaHora = "No agendada";
+        if (total == null || total.trim().isEmpty()) total = "$0 CLP";
+        if (abono == null || abono.trim().isEmpty()) abono = "$0 CLP";
+        if (saldo == null || saldo.trim().isEmpty()) saldo = "$0 CLP";
+        String resumenTexto = "👤 Cliente:\n" + cliente + "\n\n" +
+                "📐 Tamaño:\n" + tamano + " cm\n\n" +
+                "🎨 Estilo:\n" + estilo + "\n\n" +
+                "📅 Cita Agendada:\n" + fechaHora + "\n\n" +
+                "💰 Presupuesto Estimado:\n" + total + "\n" +
+                "• Abono (20%): " + abono + "\n" +
+                "• Saldo Pendiente: " + saldo;
         txtResumen.setText(resumenTexto);
-        boolean guardadoExitoso = dbHelper.guardarCotizacion(cliente, estilo, tamano, fechaHora, total);
-        if (guardadoExitoso) {
-            Toast.makeText(this, "Cotización guardada en BD local", Toast.LENGTH_SHORT).show();
-        } btnVolver.setOnClickListener(v -> {
+        if (!cliente.equalsIgnoreCase("No especificado")) {
+            boolean guardadoExitoso = dbHelper.guardarCotizacion(cliente, estilo, tamano, fechaHora, total);
+            if (guardadoExitoso) {
+                Toast.makeText(this, "Cotización guardada en BD local", Toast.LENGTH_SHORT).show();
+            }
+        }
+        btnVolver.setOnClickListener(v -> {
             Intent intentHome = new Intent(ConfirmacionActivity.this, MainActivity.class);
             intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intentHome);

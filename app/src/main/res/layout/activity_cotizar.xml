@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="← Nueva Consulta"
+                android:text="Nueva Consulta"
                 android:textColor="@color/crimson_red"
                 android:textSize="26sp"
                 android:textStyle="bold"
@@ -78,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:text="📐 Tamaño (cm)"
+                        android:text="Tamaño (cm)"
                         android:textColor="@color/crimson_red"
                         android:textSize="14sp"
                         android:textStyle="bold" />
