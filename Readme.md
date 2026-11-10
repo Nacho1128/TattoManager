@@ -36,3 +36,8 @@ el flujo de trabajo de artistas y estudios de tatuaje. permite calcular presupue
 
 - Interfaz en tema oscuro construida sobre `ConstraintLayout` con `CardView`.
 - Navegación con `BottomNavigationView` e `Intents` explícitos controlando el Back Stack.
+
+---
+## diagrama de flujo de pantallas (UI Flow)
+
+<img src="ui_flow.png" alt="Diagrama de Flujo TattoManager" width="100%" />
