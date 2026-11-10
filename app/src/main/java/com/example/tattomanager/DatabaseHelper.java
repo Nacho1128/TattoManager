@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Gestor de base de datos SQLite para la aplicacion TattoManagger
+ **/
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "tattomanager.db";
@@ -41,6 +44,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     *Guarda una cotización en la base de datos usando ContentValues.
+     *@param cliente Nombre del cliente
+     *@param estilo Estilo de tatuaje
+     *@param tamano Tamaño en cm
+     *@param fechaHora Fecha agendada
+     *@param total Monto total
+     *@return true si se guardó con éxito
+     **/
     public boolean guardarCotizacion(String cliente, String estilo, String tamano, String fechaHora, String total) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -55,11 +67,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return resultado != -1;
     }
 
+    /**
+     * obtiene todas las cotizaciones de la base de datos
+     * @return cursor con los resultados
+     **/
     public Cursor obtenerTodasLasCotizaciones() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_COTIZACIONES + " ORDER BY " + COLUMN_ID + " DESC", null);
     }
 
+    /**
+     * actualiza una cotizacion por su ID mediante consulta parametrizada
+     * @param id ID del registro a actualizar
+     * @return true si se actualizó el registro
+     **/
     public boolean actualizarCotizacion(int id, String cliente, String estilo, String tamano, String fechaHora, String total) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -73,6 +94,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return filasAfectadas > 0;
     }
 
+    /**
+     * elimina una cotizacion por su ID
+     * @param id ID del registro a eliminar
+     * @return true si se eliminó el registro
+     **/
     public boolean eliminarCotizacion(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int filasEliminadas = db.delete(TABLE_COTIZACIONES, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});

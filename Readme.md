@@ -38,6 +38,11 @@ el flujo de trabajo de artistas y estudios de tatuaje. permite calcular presupue
 - Navegación con `BottomNavigationView` e `Intents` explícitos controlando el Back Stack.
 
 ---
-## diagrama de flujo de pantallas (UI Flow)
+## Diagrama de flujo de pantallas (UI Flow)
 
 <img src="ui_flow.png" alt="Diagrama de Flujo TattoManager" width="100%" />
+
+---
+## Modelo Entidad-Relacion (ERD) - SQLite 
+
+<img src="erd_model.png" alt="Diagrama ERD" width="100%" />
