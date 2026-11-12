@@ -10,11 +10,27 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * actividad encargada de presentar el resumen detallado de la cotizacion en TattoManager
+ * recibe los datos ingresados desde CotizarActivity mediante el Intent, valida los valores,
+ * calcula y muestra el desglose del presupuesto (monto total, abono del 20% y el saldo pendiente)
+ * persiste el registro en la base de datos local SQLite mediante DatabaseHelper y administra la
+ * navegacion de la interfaz mediante BottomNavigationView
+ * **/
+
 public class ConfirmacionActivity extends AppCompatActivity {
     private TextView txtResumen;
     private Button btnVolver;
     private DatabaseHelper dbHelper;
     private BottomNavigationView bottomNavigation;
+
+    /**
+     * inicializa los componentes de la vista, procesa los extra recibidos en el intent,
+     * construye el resumen de la cotizacion, persiste los datos en SQLite y configura los
+     * listenners de navegacion
+     *
+     * @param savedInstanceState Estado previamente guardado de la actividad
+     * **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

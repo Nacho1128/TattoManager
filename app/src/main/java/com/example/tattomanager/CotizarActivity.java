@@ -18,6 +18,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * actividad encargada del formulario de cotizacion de tatuajes en TattoManager
+ *
+ * permite ingresar el nombre del cliente, el tamaño del tatuaje en centimetros,
+ * agendar la fecha y hora mediante DatePickerDialog y TimePickerDialog, seleccionar
+ * el estilo tecnico ($5.000/cm en tradicional/blacwork o $8.000/cm en realismo/color)
+ * y calcular el abono de reserva (20%) antes de enviar los datos mediante un Intent a ConfirmacionActivity
+ * **/
+
 public class CotizarActivity extends AppCompatActivity {
     private EditText edtNombreCliente, edtTamanoCm;
     private Button btnFecha, btnHora, btnCalcular;
@@ -28,6 +37,14 @@ public class CotizarActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigation;
     private String fechaSeleccionada = "";
     private String horaSeleccionada = "";
+
+    /**
+     * inicializa los componentes graficos de la vista, configura los listeners de seleccion
+     * de fecha, hora y estilo, gestiona el calculo del presupuesto y administra la navegacion
+     * mediante la barra inferior BottomNavigationView
+     *
+     * @param savedInstanceState Estado previamente guardado de la actividad
+     * **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

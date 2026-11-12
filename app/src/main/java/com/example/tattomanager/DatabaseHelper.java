@@ -45,13 +45,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     *Guarda una cotización en la base de datos usando ContentValues.
-     *@param cliente Nombre del cliente
-     *@param estilo Estilo de tatuaje
-     *@param tamano Tamaño en cm
-     *@param fechaHora Fecha agendada
-     *@param total Monto total
-     *@return true si se guardó con éxito
+     * Guarda una cotización en la base de datos usando ContentValues.
+     *
+     * @param cliente   Nombre del cliente
+     * @param estilo    Estilo de tatuaje
+     * @param tamano    Tamaño en cm
+     * @param fechaHora Fecha agendada
+     * @param total     Monto total
+     * @return true si se guardó con éxito
      **/
     public boolean guardarCotizacion(String cliente, String estilo, String tamano, String fechaHora, String total) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -69,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * obtiene todas las cotizaciones de la base de datos
+     *
      * @return cursor con los resultados
      **/
     public Cursor obtenerTodasLasCotizaciones() {
@@ -78,6 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * actualiza una cotizacion por su ID mediante consulta parametrizada
+     *
      * @param id ID del registro a actualizar
      * @return true si se actualizó el registro
      **/
@@ -96,6 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * elimina una cotizacion por su ID
+     *
      * @param id ID del registro a eliminar
      * @return true si se eliminó el registro
      **/

@@ -14,11 +14,26 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+/**
+ * actividad encargada de la geolocalizacion e integracion del GPS en TattoManager
+ *
+ * solicita y verifica permisos de ubicacion en tiempo de ejecucion (ACCESS_FINE_LOCATION)
+ * y utiliza FusedLocationProviderClient para obtener las cordenadas geograficas (latitud y longitud)
+ * en tiempo real o presentar las coordenadas fijas del estudio de tatuajes
+ **/
+
 public class MapActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private FusedLocationProviderClient fusedLocationClient;
     private TextView txtCoordenadas;
+
+    /**
+     * inicializa los componentes graficos de la vista, obtiene la instancia de
+     * FusedLocationProviderClient e inicia la verificación de permisos de ubicación
+     *
+     * @param savedInstanceState Estado previamente guardado de la actividad
+     **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +46,10 @@ public class MapActivity extends AppCompatActivity {
         verificarPermisoUbicacion();
     }
 
+    /**
+     * Comprueba si el permiso ACCESS\_FINE\_LOCATION ha sido otorgado por el usuario
+     * En caso afirmativo, procede a obtener la posición; de lo contrario, solicita el permiso en runtime
+     **/
     private void verificarPermisoUbicacion() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -43,6 +62,11 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Captura la última ubicación conocida mediante FusedLocationProviderClient
+     * Actualiza la vista con las coordenadas de latitud y longitud obtenidas
+     * o despliega la ubicación por defecto del estudio si el dispositivo no retorna ubicación
+     **/
     private void obtenerUbicacionActual() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
@@ -56,6 +80,15 @@ public class MapActivity extends AppCompatActivity {
             });
         }
     }
+
+    /**
+     * Procesa la respuesta del usuario ante la solicitud de permisos en tiempo de ejecución
+     * Si el permiso es concedido, llama a obtenerUbicacionActual(); de lo contrario, notifica al usuario mediante Toast
+     *
+     * @param requestCode Código de solicitud del permiso
+     * @param permissions Arreglo con los permisos solicitados
+     * @param grantResults Resultado de la concesión para cada permiso
+     **/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

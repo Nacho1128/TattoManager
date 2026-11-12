@@ -8,7 +8,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * actividad principal y panel de control (dashboard) de la aplicacion TattoManager
+ *
+ * coordina el acceso general a la aplicacion, permitiendo al usuario navegar hacia
+ * el formulario de cotizacion, la visualizacion del mapa con ubicacion GPS y la lectura
+ * de sensores del dispositivo mediante botones dea acceso rapido y la barra de navegacion
+ * inferior ButtomNavigationView
+ * **/
+
+
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * inicializa la vista principal, vincula los botones del panel de control
+     * y configura la navegacion por pestañas mediante ButtomNavigationView
+     *
+     * @param savedInstanceState Estado previamente guardado de la actividad
+     * **/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
